@@ -25,13 +25,15 @@ textarea{min-height:100px;resize:vertical}.btn{border:0;border-radius:8px;paddin
 
 <main>
   <div id="form-container">
+    <input type="hidden" id="access_key" value="eabe321d-163a-4c6a-9c50-7551d6ab3232">
+
     <div class="card">
       <h2>1. Dados da compra</h2>
       <p><strong>🔒 Avaliação anônima</strong><br><small>Sua avaliação é anônima. O endereço é solicitado apenas para identificar a entrega/atendimento.</small></p>
       <div class="grid">
         <div><label>Data da compra<input id="dataCompra" type="date" required></label></div>
         <div><label>Horário da solicitação<input id="horaSolicitacao" type="time" required></label></div>
-        <div><label style="grid-column: span 2;">Endereço da entrega<input id="endereco" placeholder="Rua, número, bairro, cidade" required></label></div>
+        <div style="grid-column: 1 / -1;"><label>Endereço da entrega<input id="endereco" placeholder="Rua, número, bairro, cidade" required></label></div>
       </div>
     </div>
 
@@ -40,10 +42,11 @@ textarea{min-height:100px;resize:vertical}.btn{border:0;border-radius:8px;paddin
       <label>Quem realizou a entrega?
         <select id="funcEntrega">
           <option value="">Selecione...</option>
-          <option value="Não informado / Outro">Não sei quem entregou</option>
-          <!-- Seus entregadores -->
-          <option value="Entregador 1">Entregador 1</option>
-          <option value="Entregador 2">Entregador 2</option>
+          <option value="Não sei quem entregou">Não sei quem entregou</option>
+          <option value="Anderson">Anderson</option>
+          <option value="João">João</option>
+          <option value="Rodrigo">Rodrigo</option>
+          <option value="Wanderson">Wanderson</option>
         </select>
       </label>
       <div id="criteriosEntrega"></div>
@@ -55,7 +58,6 @@ textarea{min-height:100px;resize:vertical}.btn{border:0;border-radius:8px;paddin
         <select id="funcTelefone">
           <option value="">Selecione...</option>
           <option value="Não informado / Outro">Não sei quem atendeu</option>
-          <!-- Atendentes fixos de telefone -->
           <option value="Diego">Diego</option>
           <option value="Fábio">Fábio</option>
         </select>
@@ -65,7 +67,7 @@ textarea{min-height:100px;resize:vertical}.btn{border:0;border-radius:8px;paddin
 
     <div class="card">
       <label>Comentário ou sugestão<textarea id="obs" placeholder="Conte como foi sua experiência..."></textarea></label>
-      <button class="btn" onclick="salvarAval()">Enviar Avaliação</button>
+      <button class="btn" id="btnEnviar" onclick="salvarAval()">Enviar Avaliação</button>
     </div>
   </div>
 
@@ -77,7 +79,7 @@ textarea{min-height:100px;resize:vertical}.btn{border:0;border-radius:8px;paddin
 </main>
 
 <script>
-const criterios=['Simpatia','Cordialidade','Prestativo','Nota para o atendimento'];
+const criterios=['Simpatia','Cordialidade','Prestativo','Nota Geral'];
 const hoje=new Date().toISOString().slice(0,10);
 document.getElementById('dataCompra').value=hoje;
 
@@ -104,7 +106,9 @@ function obterNotas(boxId){
   return notas;
 }
 
-function salvarAval(){
+async function salvarAval(){
+  const accessKey = document.getElementById('access_key').value;
+
   const data=document.getElementById('dataCompra').value;
   const hora=document.getElementById('horaSolicitacao').value;
   const endereco=document.getElementById('endereco').value.trim();
@@ -115,13 +119,45 @@ function salvarAval(){
 
   if(!data){alert('Informe a data da compra.');return}
   if(!hora){alert('Informe o horário do pedido.');return}
+  if(!endereco){alert('Informe o endereço.');return}
   if(!funcEntrega && !funcTelefone){alert('Selecione pelo menos um atendimento (Entrega ou Telefone).');return}
 
-  const obs=document.getElementById('obs').value.trim();
+  const btn = document.getElementById('btnEnviar');
+  btn.innerText = 'Enviando...';
+  btn.disabled = true;
 
-  // Oculta formulário e exibe tela de agradecimento
-  document.getElementById('form-container').style.display='none';
-  document.getElementById('sucesso').style.display='block';
+  const payload = {
+    access_key: accessKey,
+    subject: `Nova Avaliação de Cliente - ${data}`,
+    Data_Compra: data,
+    Hora_Solicitacao: hora,
+    Endereco: endereco,
+    Entregador: funcEntrega || 'Não avaliado',
+    Notas_Entrega: JSON.stringify(notasEntrega),
+    Atendente_Telefone: funcTelefone || 'Não avaliado',
+    Notas_Telefone: JSON.stringify(notasTelefone),
+    Comentarios: document.getElementById('obs').value.trim() || 'Nenhum'
+  };
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if(res.ok){
+      document.getElementById('form-container').style.display='none';
+      document.getElementById('sucesso').style.display='block';
+    } else {
+      alert('Ocorreu um erro ao enviar. Tente novamente.');
+      btn.innerText = 'Enviar Avaliação';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    alert('Erro de conexão. Verifique sua internet.');
+    btn.innerText = 'Enviar Avaliação';
+    btn.disabled = false;
+  }
 }
 
 buildCriteriaBox('criteriosEntrega');
