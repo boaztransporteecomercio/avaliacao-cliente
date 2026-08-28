@@ -1,167 +1,644 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Avaliação do Atendimento</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f5f7;color:#1f2937}
-header{background:#123b66;color:#fff;padding:22px 16px;text-align:center}header h1{margin:0;font-size:25px}header p{margin:7px 0 0;opacity:.9}
-main{max-width:700px;margin:auto;padding:16px}.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px #00000010}
-h2{margin-top:0;color:#123b66}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-label{font-weight:bold;font-size:14px;display:block}input,select,textarea{width:100%;padding:12px;margin-top:6px;border:1px solid #ccd3da;border-radius:8px;font-size:16px}
-textarea{min-height:100px;resize:vertical}.btn{border:0;border-radius:8px;padding:14px 20px;font-weight:bold;cursor:pointer;background:#123b66;color:#fff;margin-top:12px;width:100%;font-size:16px}
-.criteria{padding:15px 0;border-bottom:1px solid #eee}.criteria strong{display:block;margin-bottom:9px}
-.rating{display:flex;gap:7px}.rating button{width:43px;height:43px;border:1px solid #cbd5e1;background:#fff;border-radius:8px;font-weight:bold;font-size:15px;cursor:pointer}.rating button.sel{background:#123b66;color:#fff}
-.success{text-align:center;padding:30px 15px}.success .big{font-size:52px;margin-bottom:10px}
-@media(max-width:600px){.grid{grid-template-columns:1fr}.rating button{width:40px;height:40px}}
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f3f5f7;
+  color:#1f2937
+}
+
+header{
+  background:#123b66;
+  color:#fff;
+  padding:22px 16px;
+  text-align:center
+}
+
+header h1{
+  margin:0;
+  font-size:25px
+}
+
+header p{
+  margin:7px 0 0;
+  opacity:.9
+}
+
+main{
+  max-width:700px;
+  margin:auto;
+  padding:16px
+}
+
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 2px 10px #00000010
+}
+
+h2{
+  margin-top:0;
+  color:#123b66
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px
+}
+
+label{
+  font-weight:bold;
+  font-size:14px;
+  display:block
+}
+
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  border:1px solid #ccd3da;
+  border-radius:8px;
+  font-size:16px
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical
+}
+
+.btn{
+  border:0;
+  border-radius:8px;
+  padding:14px 20px;
+  font-weight:bold;
+  cursor:pointer;
+  background:#123b66;
+  color:#fff;
+  margin-top:12px;
+  width:100%;
+  font-size:16px
+}
+
+.btn:disabled{
+  opacity:.6;
+  cursor:not-allowed
+}
+
+.criteria{
+  padding:15px 0;
+  border-bottom:1px solid #eee
+}
+
+.criteria strong{
+  display:block;
+  margin-bottom:9px
+}
+
+.rating{
+  display:flex;
+  gap:7px
+}
+
+.rating button{
+  width:43px;
+  height:43px;
+  border:1px solid #cbd5e1;
+  background:#fff;
+  border-radius:8px;
+  font-weight:bold;
+  font-size:15px;
+  cursor:pointer
+}
+
+.rating button.sel{
+  background:#123b66;
+  color:#fff
+}
+
+.success{
+  text-align:center;
+  padding:30px 15px
+}
+
+.success .big{
+  font-size:52px;
+  margin-bottom:10px
+}
+
+@media(max-width:600px){
+  .grid{
+    grid-template-columns:1fr
+  }
+
+  .rating button{
+    width:40px;
+    height:40px
+  }
+}
 </style>
 </head>
+
 <body>
+
 <header>
   <h1>⭐ Avaliação do Atendimento</h1>
   <p>Sua opinião é muito importante para nós</p>
 </header>
 
 <main>
+
   <div id="form-container">
+
     <input type="hidden" id="access_key" value="eabe321d-163a-4c6a-9c50-7551d6ab3232">
 
     <div class="card">
+
       <h2>1. Dados da compra</h2>
-      <p><strong>🔒 Avaliação anônima</strong><br><small>Sua avaliação é anônima. O endereço é solicitado apenas para identificar a entrega/atendimento.</small></p>
+
+      <p>
+        <strong>🔒 Avaliação anônima</strong><br>
+        <small>
+          Sua avaliação é anônima. O endereço é solicitado apenas para identificar a entrega/atendimento.
+        </small>
+      </p>
+
       <div class="grid">
-        <div><label>Data da compra<input id="dataCompra" type="date" required></label></div>
-        <div><label>Horário da solicitação<input id="horaSolicitacao" type="time" required></label></div>
-        <div style="grid-column: 1 / -1;"><label>Endereço da entrega<input id="endereco" placeholder="Rua, número, bairro, cidade" required></label></div>
+
+        <div>
+          <label>
+            Data da compra
+            <input id="dataCompra" type="date" required>
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Horário da solicitação
+            <input id="horaSolicitacao" type="time" required>
+          </label>
+        </div>
+
+        <!-- RUA -->
+        <div>
+          <label>
+            Rua
+            <input
+              id="rua"
+              type="text"
+              placeholder="Digite o nome da rua"
+              required
+            >
+          </label>
+        </div>
+
+        <!-- NÚMERO -->
+        <div>
+          <label>
+            Número
+            <input
+              id="numero"
+              type="text"
+              placeholder="Número"
+              required
+            >
+          </label>
+        </div>
+
+        <!-- BAIRRO -->
+        <div style="grid-column:1 / -1;">
+          <label>
+            Bairro
+            <input
+              id="bairro"
+              type="text"
+              placeholder="Digite o bairro"
+              required
+            >
+          </label>
+        </div>
+
       </div>
     </div>
 
-    <div class="card" style="border:2px solid #123b66">
-      <h2>🚚 Avaliação do atendimento na entrega</h2>
-      <label>Quem realizou a entrega?
-        <select id="funcEntrega">
-          <option value="">Selecione...</option>
-          <option value="Não sei quem entregou">Não sei quem entregou</option>
-          <option value="Anderson">Anderson</option>
-          <option value="João">João</option>
-          <option value="Rodrigo">Rodrigo</option>
-          <option value="Wanderson">Wanderson</option>
-        </select>
-      </label>
-      <div id="criteriosEntrega"></div>
-    </div>
 
     <div class="card" style="border:2px solid #123b66">
-      <h2>📞 Avaliação do atendimento por telefone</h2>
-      <label>Quem realizou o atendimento por telefone?
-        <select id="funcTelefone">
+
+      <h2>🚚 Avaliação do atendimento na entrega</h2>
+
+      <label>
+        Quem realizou a entrega?
+
+        <select id="funcEntrega">
+
           <option value="">Selecione...</option>
-          <option value="Não informado / Outro">Não sei quem atendeu</option>
-          <option value="Diego">Diego</option>
-          <option value="Fábio">Fábio</option>
+
+          <option value="Não sei quem entregou">
+            Não sei quem entregou
+          </option>
+
+          <option value="Anderson">
+            Anderson
+          </option>
+
+          <option value="João">
+            João
+          </option>
+
+          <option value="Rodrigo">
+            Rodrigo
+          </option>
+
+          <option value="Wanderson">
+            Wanderson
+          </option>
+
         </select>
       </label>
-      <div id="criteriosTelefone"></div>
+
+      <div id="criteriosEntrega"></div>
+
     </div>
+
+
+    <div class="card" style="border:2px solid #123b66">
+
+      <h2>📞 Avaliação do atendimento por telefone</h2>
+
+      <label>
+        Quem realizou o atendimento por telefone?
+
+        <select id="funcTelefone">
+
+          <option value="">Selecione...</option>
+
+          <option value="Não informado / Outro">
+            Não sei quem atendeu
+          </option>
+
+          <option value="Diego">
+            Diego
+          </option>
+
+          <option value="Fábio">
+            Fábio
+          </option>
+
+        </select>
+      </label>
+
+      <div id="criteriosTelefone"></div>
+
+    </div>
+
 
     <div class="card">
-      <label>Comentário ou sugestão<textarea id="obs" placeholder="Conte como foi sua experiência..."></textarea></label>
-      <button class="btn" id="btnEnviar" onclick="salvarAval()">Enviar Avaliação</button>
+
+      <label>
+        Comentário ou sugestão
+
+        <textarea
+          id="obs"
+          placeholder="Conte como foi sua experiência..."
+        ></textarea>
+
+      </label>
+
+      <button
+        class="btn"
+        id="btnEnviar"
+        onclick="salvarAval()"
+      >
+        Enviar Avaliação
+      </button>
+
     </div>
+
   </div>
 
-  <div id="sucesso" class="card success" style="display:none;">
+
+  <div
+    id="sucesso"
+    class="card success"
+    style="display:none;"
+  >
+
     <div class="big">✅</div>
-    <h2>Obrigado pela sua avaliação!</h2>
-    <p>Sua opinião nos ajuda a melhorar cada vez mais nossos serviços.</p>
+
+    <h2>
+      Obrigado pela sua avaliação!
+    </h2>
+
+    <p>
+      Sua opinião nos ajuda a melhorar cada vez mais nossos serviços.
+    </p>
+
   </div>
+
 </main>
 
+
 <script>
-const criterios=['Simpatia','Cordialidade','Prestatividade','Nota Geral'];
-const hoje=new Date().toISOString().slice(0,10);
-document.getElementById('dataCompra').value=hoje;
 
+const criterios = [
+  'Simpatia',
+  'Cordialidade',
+  'Prestatividade',
+  'Nota Geral'
+];
+
+
+// Preenche automaticamente a data de hoje
+const hoje = new Date().toISOString().slice(0,10);
+
+document.getElementById('dataCompra').value = hoje;
+
+
+// Cria as opções de notas
 function buildCriteriaBox(id){
-  const el=document.getElementById(id); el.innerHTML='';
+
+  const el = document.getElementById(id);
+
+  el.innerHTML = '';
+
   criterios.forEach((c,i)=>{
-    let d=document.createElement('div'); d.className='criteria';
-    d.innerHTML='<strong>'+c+'</strong><div class="rating">'+[1,2,3,4,5].map(n=>`<button type="button" onclick="notaBox('${id}',${i},${n},this)">${n}</button>`).join('')+'</div><small>1 = Muito ruim &nbsp; • &nbsp; 5 = Excelente</small>';
+
+    let d = document.createElement('div');
+
+    d.className = 'criteria';
+
+    d.innerHTML =
+      '<strong>' + c + '</strong>' +
+      '<div class="rating">' +
+
+      [1,2,3,4,5].map(n =>
+
+        `<button
+          type="button"
+          onclick="notaBox('${id}',${i},${n},this)"
+        >${n}</button>`
+
+      ).join('') +
+
+      '</div>' +
+
+      '<small>1 = Muito ruim &nbsp; • &nbsp; 5 = Excelente</small>';
+
     el.appendChild(d);
+
   });
 }
 
+
+// Seleciona uma nota
 function notaBox(box,i,n,btn){
-  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('sel'));
+
+  btn.parentElement
+    .querySelectorAll('button')
+    .forEach(b => b.classList.remove('sel'));
+
   btn.classList.add('sel');
-  btn.parentElement.parentElement.dataset.nota=n;
+
+  btn.parentElement.parentElement.dataset.nota = n;
+
 }
 
+
+// Obtém as notas
 function obterNotas(boxId){
-  const notas={};
-  document.querySelectorAll('#'+boxId+' .criteria').forEach((el,i)=>{
-    notas[criterios[i]]=Number(el.dataset.nota||0);
-  });
+
+  const notas = {};
+
+  document
+    .querySelectorAll('#' + boxId + ' .criteria')
+    .forEach((el,i)=>{
+
+      notas[criterios[i]] =
+        Number(el.dataset.nota || 0);
+
+    });
+
   return notas;
 }
 
+
+// Envia a avaliação
 async function salvarAval(){
-  const accessKey = document.getElementById('access_key').value;
 
-  const data=document.getElementById('dataCompra').value;
-  const hora=document.getElementById('horaSolicitacao').value;
-  const endereco=document.getElementById('endereco').value.trim();
-  const funcEntrega=document.getElementById('funcEntrega').value;
-  const funcTelefone=document.getElementById('funcTelefone').value;
-  const notasEntrega=obterNotas('criteriosEntrega');
-  const notasTelefone=obterNotas('criteriosTelefone');
+  const accessKey =
+    document.getElementById('access_key').value;
 
-  if(!data){alert('Informe a data da compra.');return}
-  if(!hora){alert('Informe o horário do pedido.');return}
-  if(!endereco){alert('Informe o endereço.');return}
-  if(!funcEntrega && !funcTelefone){alert('Selecione pelo menos um atendimento (Entrega ou Telefone).');return}
 
-  const btn = document.getElementById('btnEnviar');
+  const data =
+    document.getElementById('dataCompra').value;
+
+
+  const hora =
+    document.getElementById('horaSolicitacao').value;
+
+
+  const rua =
+    document.getElementById('rua').value.trim();
+
+
+  const numero =
+    document.getElementById('numero').value.trim();
+
+
+  const bairro =
+    document.getElementById('bairro').value.trim();
+
+
+  const funcEntrega =
+    document.getElementById('funcEntrega').value;
+
+
+  const funcTelefone =
+    document.getElementById('funcTelefone').value;
+
+
+  const notasEntrega =
+    obterNotas('criteriosEntrega');
+
+
+  const notasTelefone =
+    obterNotas('criteriosTelefone');
+
+
+  // Validações
+  if(!data){
+
+    alert('Informe a data da compra.');
+
+    return;
+  }
+
+
+  if(!hora){
+
+    alert('Informe o horário do pedido.');
+
+    return;
+  }
+
+
+  if(!rua){
+
+    alert('Informe a rua.');
+
+    return;
+  }
+
+
+  if(!numero){
+
+    alert('Informe o número do endereço.');
+
+    return;
+  }
+
+
+  if(!bairro){
+
+    alert('Informe o bairro.');
+
+    return;
+  }
+
+
+  if(!funcEntrega && !funcTelefone){
+
+    alert(
+      'Selecione pelo menos um atendimento (Entrega ou Telefone).'
+    );
+
+    return;
+  }
+
+
+  const btn =
+    document.getElementById('btnEnviar');
+
+
   btn.innerText = 'Enviando...';
+
   btn.disabled = true;
 
+
+  // Dados enviados
   const payload = {
+
     access_key: accessKey,
-    subject: `Nova Avaliação de Cliente - ${data}`,
+
+    subject:
+      `Nova Avaliação de Cliente - ${data}`,
+
     Data_Compra: data,
+
     Hora_Solicitacao: hora,
-    Endereco: endereco,
-    Entregador: funcEntrega || 'Não avaliado',
-    Notas_Entrega: JSON.stringify(notasEntrega),
-    Atendente_Telefone: funcTelefone || 'Não avaliado',
-    Notas_Telefone: JSON.stringify(notasTelefone),
-    Comentarios: document.getElementById('obs').value.trim() || 'Nenhum'
+
+    Rua: rua,
+
+    Numero: numero,
+
+    Bairro: bairro,
+
+    Entregador:
+      funcEntrega || 'Não avaliado',
+
+    Notas_Entrega:
+      JSON.stringify(notasEntrega),
+
+    Atendente_Telefone:
+      funcTelefone || 'Não avaliado',
+
+    Notas_Telefone:
+      JSON.stringify(notasTelefone),
+
+    Comentarios:
+      document.getElementById('obs').value.trim()
+      || 'Nenhum'
   };
 
-  try {
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+
+  try{
+
+    const res = await fetch(
+      'https://api.web3forms.com/submit',
+      {
+        method:'POST',
+
+        headers:{
+          'Content-Type':'application/json'
+        },
+
+        body:JSON.stringify(payload)
+      }
+    );
+
+
     if(res.ok){
-      document.getElementById('form-container').style.display='none';
-      document.getElementById('sucesso').style.display='block';
-    } else {
-      alert('Ocorreu um erro ao enviar. Tente novamente.');
-      btn.innerText = 'Enviar Avaliação';
-      btn.disabled = false;
+
+      document.getElementById(
+        'form-container'
+      ).style.display = 'none';
+
+
+      document.getElementById(
+        'sucesso'
+      ).style.display = 'block';
+
     }
-  } catch(e) {
-    alert('Erro de conexão. Verifique sua internet.');
-    btn.innerText = 'Enviar Avaliação';
-    btn.disabled = false;
+
+    else{
+
+      alert(
+        'Ocorreu um erro ao enviar. Tente novamente.'
+      );
+
+      btn.innerText =
+        'Enviar Avaliação';
+
+      btn.disabled = false;
+
+    }
+
   }
+
+  catch(e){
+
+    alert(
+      'Erro de conexão. Verifique sua internet.'
+    );
+
+    btn.innerText =
+      'Enviar Avaliação';
+
+    btn.disabled = false;
+
+  }
+
 }
 
+
+// Monta os campos de avaliação
 buildCriteriaBox('criteriosEntrega');
+
 buildCriteriaBox('criteriosTelefone');
+
 </script>
+
 </body>
 </html>
+```
