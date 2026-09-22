@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -73,9 +72,21 @@ input,select,textarea{
   font-size:16px
 }
 
+input:focus,select:focus,textarea:focus{
+  outline:none;
+  border-color:#123b66;
+  box-shadow:0 0 0 2px #123b6620
+}
+
 textarea{
   min-height:100px;
   resize:vertical
+}
+
+small{
+  display:block;
+  margin-top:5px;
+  color:#6b7280
 }
 
 .btn{
@@ -138,6 +149,7 @@ textarea{
 }
 
 @media(max-width:600px){
+
   .grid{
     grid-template-columns:1fr
   }
@@ -161,32 +173,47 @@ textarea{
 
   <div id="form-container">
 
-    <input type="hidden" id="access_key" value="eabe321d-163a-4c6a-9c50-7551d6ab3232">
+    <input
+      type="hidden"
+      id="access_key"
+      value="eabe321d-163a-4c6a-9c50-7551d6ab3232"
+    >
 
     <div class="card">
 
       <h2>1. Dados da compra</h2>
 
       <p>
-        <strong>🔒 Avaliação anônima</strong><br>
+        <strong>📞 Telefone para identificação</strong><br>
         <small>
-          Sua avaliação é anônima. O endereço é solicitado apenas para identificar a entrega/atendimento.
+          Informe seu telefone ou celular. Esse número será utilizado apenas
+          para identificar a avaliação e o atendimento relacionado à compra.
         </small>
       </p>
 
       <div class="grid">
 
+        <!-- DATA -->
         <div>
           <label>
             Data da compra
-            <input id="dataCompra" type="date" required>
+            <input
+              id="dataCompra"
+              type="date"
+              required
+            >
           </label>
         </div>
 
+        <!-- HORÁRIO -->
         <div>
           <label>
             Horário da solicitação
-            <input id="horaSolicitacao" type="time" required>
+            <input
+              id="horaSolicitacao"
+              type="time"
+              required
+            >
           </label>
         </div>
 
@@ -217,7 +244,7 @@ textarea{
         </div>
 
         <!-- BAIRRO -->
-        <div style="grid-column:1 / -1;">
+        <div>
           <label>
             Bairro
             <input
@@ -229,11 +256,35 @@ textarea{
           </label>
         </div>
 
+        <!-- TELEFONE -->
+        <div>
+          <label>
+            📞 Telefone ou celular *
+            <input
+              id="telefone"
+              type="tel"
+              placeholder="(21) 99999-9999"
+              required
+              maxlength="15"
+              inputmode="numeric"
+              autocomplete="tel"
+            >
+          </label>
+
+          <small>
+            Obrigatório — pode ser telefone fixo ou celular.
+          </small>
+        </div>
+
       </div>
     </div>
 
 
-    <div class="card" style="border:2px solid #123b66">
+    <!-- AVALIAÇÃO DA ENTREGA -->
+    <div
+      class="card"
+      style="border:2px solid #123b66"
+    >
 
       <h2>🚚 Avaliação do atendimento na entrega</h2>
 
@@ -272,7 +323,11 @@ textarea{
     </div>
 
 
-    <div class="card" style="border:2px solid #123b66">
+    <!-- AVALIAÇÃO DO TELEFONE -->
+    <div
+      class="card"
+      style="border:2px solid #123b66"
+    >
 
       <h2>📞 Avaliação do atendimento por telefone</h2>
 
@@ -303,6 +358,7 @@ textarea{
     </div>
 
 
+    <!-- COMENTÁRIO -->
     <div class="card">
 
       <label>
@@ -328,6 +384,7 @@ textarea{
   </div>
 
 
+  <!-- MENSAGEM DE SUCESSO -->
   <div
     id="sucesso"
     class="card success"
@@ -359,27 +416,95 @@ const criterios = [
 ];
 
 
-// Preenche automaticamente a data de hoje
-const hoje = new Date().toISOString().slice(0,10);
+// =====================================================
+// DATA DE HOJE
+// =====================================================
 
-document.getElementById('dataCompra').value = hoje;
+const hoje =
+  new Date().toISOString().slice(0,10);
+
+document.getElementById(
+  'dataCompra'
+).value = hoje;
 
 
-// Cria as opções de notas
+// =====================================================
+// MÁSCARA DO TELEFONE
+// Aceita:
+// Fixo:   (21) 9999-9999
+// Celular:(21) 99999-9999
+// =====================================================
+
+document
+  .getElementById('telefone')
+  .addEventListener('input', function(e){
+
+    let v =
+      e.target.value.replace(/\D/g,'');
+
+    // Limita a 11 números
+    if(v.length > 11){
+
+      v = v.substring(0,11);
+
+    }
+
+    // Telefone fixo - 10 dígitos
+    if(v.length <= 10){
+
+      v = v.replace(
+        /^(\d{2})(\d)/,
+        '($1) $2'
+      );
+
+      v = v.replace(
+        /(\d{4})(\d)/,
+        '$1-$2'
+      );
+
+    }
+
+    // Celular - 11 dígitos
+    else{
+
+      v = v.replace(
+        /^(\d{2})(\d)/,
+        '($1) $2'
+      );
+
+      v = v.replace(
+        /(\d{5})(\d)/,
+        '$1-$2'
+      );
+
+    }
+
+    e.target.value = v;
+
+  });
+
+
+// =====================================================
+// CRIA AS OPÇÕES DE NOTAS
+// =====================================================
+
 function buildCriteriaBox(id){
 
-  const el = document.getElementById(id);
+  const el =
+    document.getElementById(id);
 
   el.innerHTML = '';
 
   criterios.forEach((c,i)=>{
 
-    let d = document.createElement('div');
+    let d =
+      document.createElement('div');
 
     d.className = 'criteria';
 
     d.innerHTML =
       '<strong>' + c + '</strong>' +
+
       '<div class="rating">' +
 
       [1,2,3,4,5].map(n =>
@@ -398,74 +523,118 @@ function buildCriteriaBox(id){
     el.appendChild(d);
 
   });
+
 }
 
 
-// Seleciona uma nota
+// =====================================================
+// SELECIONA UMA NOTA
+// =====================================================
+
 function notaBox(box,i,n,btn){
 
   btn.parentElement
     .querySelectorAll('button')
-    .forEach(b => b.classList.remove('sel'));
+    .forEach(b =>
+      b.classList.remove('sel')
+    );
 
   btn.classList.add('sel');
 
-  btn.parentElement.parentElement.dataset.nota = n;
+  btn.parentElement
+    .parentElement.dataset.nota = n;
 
 }
 
 
-// Obtém as notas
+// =====================================================
+// OBTÉM AS NOTAS
+// =====================================================
+
 function obterNotas(boxId){
 
   const notas = {};
 
   document
-    .querySelectorAll('#' + boxId + ' .criteria')
+    .querySelectorAll(
+      '#' + boxId + ' .criteria'
+    )
     .forEach((el,i)=>{
 
       notas[criterios[i]] =
-        Number(el.dataset.nota || 0);
+        Number(
+          el.dataset.nota || 0
+        );
 
     });
 
   return notas;
+
 }
 
 
-// Envia a avaliação
+// =====================================================
+// ENVIA A AVALIAÇÃO
+// =====================================================
+
 async function salvarAval(){
 
   const accessKey =
-    document.getElementById('access_key').value;
+    document
+      .getElementById('access_key')
+      .value;
 
 
   const data =
-    document.getElementById('dataCompra').value;
+    document
+      .getElementById('dataCompra')
+      .value;
 
 
   const hora =
-    document.getElementById('horaSolicitacao').value;
+    document
+      .getElementById('horaSolicitacao')
+      .value;
 
 
   const rua =
-    document.getElementById('rua').value.trim();
+    document
+      .getElementById('rua')
+      .value
+      .trim();
 
 
   const numero =
-    document.getElementById('numero').value.trim();
+    document
+      .getElementById('numero')
+      .value
+      .trim();
 
 
   const bairro =
-    document.getElementById('bairro').value.trim();
+    document
+      .getElementById('bairro')
+      .value
+      .trim();
+
+
+  const telefone =
+    document
+      .getElementById('telefone')
+      .value
+      .trim();
 
 
   const funcEntrega =
-    document.getElementById('funcEntrega').value;
+    document
+      .getElementById('funcEntrega')
+      .value;
 
 
   const funcTelefone =
-    document.getElementById('funcTelefone').value;
+    document
+      .getElementById('funcTelefone')
+      .value;
 
 
   const notasEntrega =
@@ -476,128 +645,241 @@ async function salvarAval(){
     obterNotas('criteriosTelefone');
 
 
-  // Validações
+  // =====================================================
+  // VALIDAÇÕES
+  // =====================================================
+
   if(!data){
 
-    alert('Informe a data da compra.');
+    alert(
+      'Informe a data da compra.'
+    );
 
     return;
+
   }
 
 
   if(!hora){
 
-    alert('Informe o horário do pedido.');
+    alert(
+      'Informe o horário do pedido.'
+    );
 
     return;
+
   }
 
 
   if(!rua){
 
-    alert('Informe a rua.');
+    alert(
+      'Informe a rua.'
+    );
 
     return;
+
   }
 
 
   if(!numero){
 
-    alert('Informe o número do endereço.');
+    alert(
+      'Informe o número do endereço.'
+    );
 
     return;
+
   }
 
 
   if(!bairro){
 
-    alert('Informe o bairro.');
+    alert(
+      'Informe o bairro.'
+    );
 
     return;
+
   }
 
 
-  if(!funcEntrega && !funcTelefone){
+  // =====================================================
+  // TELEFONE OBRIGATÓRIO
+  // =====================================================
+
+  if(!telefone){
+
+    alert(
+      'Informe seu telefone ou celular.'
+    );
+
+    document
+      .getElementById('telefone')
+      .focus();
+
+    return;
+
+  }
+
+
+  // Remove máscara e deixa somente números
+  const telefoneNumeros =
+    telefone.replace(/\D/g,'');
+
+
+  // Aceita:
+  // 10 números = telefone fixo
+  // 11 números = celular
+
+  if(
+    telefoneNumeros.length !== 10 &&
+    telefoneNumeros.length !== 11
+  ){
+
+    alert(
+      'Informe um telefone ou celular válido.'
+    );
+
+    document
+      .getElementById('telefone')
+      .focus();
+
+    return;
+
+  }
+
+
+  // =====================================================
+  // PELO MENOS UM TIPO DE ATENDIMENTO
+  // =====================================================
+
+  if(
+    !funcEntrega &&
+    !funcTelefone
+  ){
 
     alert(
       'Selecione pelo menos um atendimento (Entrega ou Telefone).'
     );
 
     return;
+
   }
 
 
+  // =====================================================
+  // BOTÃO ENVIANDO
+  // =====================================================
+
   const btn =
-    document.getElementById('btnEnviar');
+    document
+      .getElementById('btnEnviar');
 
 
-  btn.innerText = 'Enviando...';
+  btn.innerText =
+    'Enviando...';
 
   btn.disabled = true;
 
 
-  // Dados enviados
+  // =====================================================
+  // DADOS ENVIADOS
+  // =====================================================
+
   const payload = {
 
-    access_key: accessKey,
+    access_key:
+      accessKey,
 
     subject:
       `Nova Avaliação de Cliente - ${data}`,
 
-    Data_Compra: data,
+    Data_Compra:
+      data,
 
-    Hora_Solicitacao: hora,
+    Hora_Solicitacao:
+      hora,
 
-    Rua: rua,
+    Rua:
+      rua,
 
-    Numero: numero,
+    Numero:
+      numero,
 
-    Bairro: bairro,
+    Bairro:
+      bairro,
+
+    Telefone:
+      telefone,
 
     Entregador:
-      funcEntrega || 'Não avaliado',
+      funcEntrega ||
+      'Não avaliado',
 
     Notas_Entrega:
-      JSON.stringify(notasEntrega),
+      JSON.stringify(
+        notasEntrega
+      ),
 
     Atendente_Telefone:
-      funcTelefone || 'Não avaliado',
+      funcTelefone ||
+      'Não avaliado',
 
     Notas_Telefone:
-      JSON.stringify(notasTelefone),
+      JSON.stringify(
+        notasTelefone
+      ),
 
     Comentarios:
-      document.getElementById('obs').value.trim()
-      || 'Nenhum'
+      document
+        .getElementById('obs')
+        .value
+        .trim()
+        || 'Nenhum'
+
   };
 
 
+  // =====================================================
+  // ENVIO PARA WEB3FORMS
+  // =====================================================
+
   try{
 
-    const res = await fetch(
-      'https://api.web3forms.com/submit',
-      {
-        method:'POST',
+    const res =
+      await fetch(
+        'https://api.web3forms.com/submit',
+        {
 
-        headers:{
-          'Content-Type':'application/json'
-        },
+          method:'POST',
 
-        body:JSON.stringify(payload)
-      }
-    );
+          headers:{
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(payload)
+
+        }
+      );
 
 
     if(res.ok){
 
-      document.getElementById(
-        'form-container'
-      ).style.display = 'none';
+      document
+        .getElementById(
+          'form-container'
+        )
+        .style.display = 'none';
 
 
-      document.getElementById(
-        'sucesso'
-      ).style.display = 'block';
+      document
+        .getElementById(
+          'sucesso'
+        )
+        .style.display = 'block';
 
     }
 
@@ -616,6 +898,7 @@ async function salvarAval(){
 
   }
 
+
   catch(e){
 
     alert(
@@ -632,13 +915,19 @@ async function salvarAval(){
 }
 
 
-// Monta os campos de avaliação
-buildCriteriaBox('criteriosEntrega');
+// =====================================================
+// MONTA OS CAMPOS DE AVALIAÇÃO
+// =====================================================
 
-buildCriteriaBox('criteriosTelefone');
+buildCriteriaBox(
+  'criteriosEntrega'
+);
+
+buildCriteriaBox(
+  'criteriosTelefone'
+);
 
 </script>
 
 </body>
 </html>
-```
